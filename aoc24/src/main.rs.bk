@@ -1,0 +1,44 @@
+#![feature(iter_arith)]
+extern crate permutohedron;
+
+fn main() {
+    let mut weights: Vec<u32> = vec![1,2,3,5,7,13,17,19,23,29,31,37,41,43,53,59,61,67,71,73,79,83,89,97,101,103,107,109,113];
+
+    let sum: u32 = weights.iter().sum();
+    let sz = sum / 3;
+    let mut minqe = u32::max_value();
+    for i in 5..weights.len() {
+        println!("Taking {}", i);
+        permutohedron::heap_recursive(&mut weights, |xs| {
+            if xs.iter().take(i).sum::<u32>() == sz {
+                let qe = xs.iter().take(i).fold(1, |acc, x| acc * x);
+                if qe < minqe {
+                    minqe = qe;
+                }
+            }
+        });
+    }
+}
+
+fn comb<T>(arr: &[T], n: usize) {
+    let mut incl_arr: &[bool] = std::vec::from_elem(arr.len(), false);
+    comb_intern(arr, n, &mut incl_arr, 0);
+}
+
+fn comb_intern<T>(arr: &[T], n: usize, incl_arr: &mut [bool], index: usize) {
+    if (arr.len() < n + index) { return; }
+    if (n == 0) {
+        let mut it = arr.iter().zip(incl_arr.iter()).filter_map(|(val, incl)|
+                                                                if (*incl) { Some(val) } else { None }
+                                                               );
+        for val in it { print!("{} ", *val); }
+        print("\n");
+        return;
+    }
+
+    incl_arr[index] = true;
+    comb_intern(arr, n-1, incl_arr, index+1);
+    incl_arr[index] = false;
+
+    comb_intern(arr, n, incl_arr, index+1);
+}

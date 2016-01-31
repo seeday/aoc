@@ -1,0 +1,9 @@
+[package]
+name = "aoc15"
+version = "0.1.0"
+
+[dependencies]
+clap = "0.10"
+rand = "0.3"
+time = "0.1"
+scan_fmt = "*"

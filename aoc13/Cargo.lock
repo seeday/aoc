@@ -1,0 +1,18 @@
+[root]
+name = "aoc13"
+version = "0.1.0"
+dependencies = [
+ "itertools 0.4.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "permutohedron 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "itertools"
+version = "0.4.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "permutohedron"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+

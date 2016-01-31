@@ -1,0 +1,83 @@
+extern crate regex;
+use regex::Regex;
+use std::collections::HashSet;
+use std::io::{self, Read};
+
+
+fn main() {
+    let mut buf = String::new();
+    io::stdin().read_to_string(&mut buf).unwrap();
+
+    let mut fusion: Vec<(&str, &str)> = Vec::new();
+    let mut chemical = "";
+    for line in buf.lines() {
+        let parts: Vec<&str> = line.trim().split(' ').collect();
+        if parts.len() == 3 {
+            //transformation
+            println!("{:<2} => {}", parts[0], parts[2]);
+            fusion.push((parts[0].clone(), parts[2].clone()));
+        } else if parts.len() == 1 {
+            //big chemical
+            println!("chem: {}", line);
+            chemical = line;
+        } else {
+            panic!("Unknown number of splits {}: {:?}", parts.len(), parts);
+        }
+    }
+    
+    println!("{}", repset(&chemical.to_string(), &fusion));
+    dfs(chemical, &fusion);
+}
+
+fn repset(chem: &str, replacevec: &Vec<(&str, &str)>) -> usize {
+    let mut acc: HashSet<String> = HashSet::new();
+    for &(orig, repl) in replacevec.iter() {
+        let re = Regex::new(orig).unwrap();
+        for (start, end) in re.find_iter(chem) {
+            let prefix = chem[..start].to_string();
+            let new = prefix + repl + &chem[end..];
+            acc.insert(new);
+        }
+    }
+    acc.len()
+}
+
+fn replist(chem: &str, replacevec: &Vec<(&str, &str)>) -> Vec<String> {
+    let mut acc = Vec::new();
+    for &(orig, repl) in replacevec.iter() {
+        let re = Regex::new(repl).unwrap();
+        for (start, end) in re.find_iter(chem) {
+            let prefix = chem[..start].to_string();
+            let new = prefix + orig + &chem[end..];
+            acc.push(new);
+        }
+    }
+    acc
+}
+
+fn dfs(chem: &str, repl: &Vec<(&str, &str)>) {
+    let mut replacements = repl.clone();
+    replacements.sort_by(|x, y| y.1.len().cmp(&x.1.len()));
+
+    let mut visited: HashSet<String> = HashSet::new();
+    visited.insert(chem.to_string());
+
+    let mut m = chem.to_string();
+    let mut mm = String::new();
+    let mut c = 0;
+    loop {
+        mm.clear();
+            for j in replist(&m, &replacements) {
+                if visited.contains(&j) {
+                    continue;
+                }
+                mm = j.clone();
+                visited.insert(j);
+                break;
+            }
+        m = mm.clone();
+        c += 1;
+        println!("{}, {:?}", c, m.len());
+    }
+}
+

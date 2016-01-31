@@ -1,0 +1,51 @@
+#![feature(step_by)]
+
+fn main() {
+    lazyelves();
+}
+
+fn part1() {
+    let mut i = 700000;
+    let mut p = 0;
+    while p < 34_000_000 {
+        i += 2;
+        p = presentsforhouse(i);
+        if i % 10000 == 0 {
+            println!("House {} got {} presents", i, p);
+        }
+    }
+    println!("House {} got {} presents", i, p);
+}
+
+fn presentsforhouse(house: u32) -> u32 {
+    let mut presents = 10;
+    for elfind in 2..house + 1 {
+        if house % elfind == 0 {
+            presents += elfind * 10;
+        }
+    }
+    presents
+}
+
+fn lazyelves() {
+    //since elves go only 50 houses, use iterative approach, running each elf until it stops, then
+    //moving onto the next elf. Check for maxes when that house goes out of scope (elf # > house #)
+    let mut presents = Vec::with_capacity(150);
+    for _ in 0..150 {
+        presents.push(0);
+    }
+    let mut deliveredto = 0;
+    for elf in 1..101 {
+        let mut housen = elf;
+        while deliveredto < 50 {
+        if elf + deliveredto % elf == 0 {
+            println!("Elf {} delivering {} presents to house {}", elf, elf * 11, elf + deliveredto);
+            presents[elf + house] += elf * 11;
+            deliveredto += 1;
+            }
+            housen += elf;
+        }
+        deliveredto = 0;
+    }
+    println!("{:?}", presents);
+}

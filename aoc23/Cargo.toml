@@ -1,0 +1,6 @@
+[package]
+name = "aoc23"
+version = "0.1.0"
+
+[dependencies]
+nom = "~1.0.0"
